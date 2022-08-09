@@ -24,11 +24,9 @@
 
   let state: keyof typeof properties = "default";
 
-  let sheet;
+  let sheet: HTMLStyleElement;
   onMount(() => {
     sheet = document.createElement("style");
-    sheet.type = "text/css";
-
     document.body.append(sheet);
   });
 
@@ -61,7 +59,7 @@
   <slot/>
 </button>
 
-<style>${sheet?.innerHTML}</style>
+< style>${sheet?.innerHTML}</style>
 `;
 </script>
 
