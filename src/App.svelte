@@ -1,53 +1,25 @@
 <script lang="ts">
   import { onMount } from "svelte";
-
-  function format({ type, value }) {
-    switch (type) {
-      case "range":
-        return `${value}px`;
-      case "color":
-        return value;
-      default:
-        console.assert(false, "Not available to format");
-    }
-  }
-
-  function eq(lhs, rhs) {
-    return lhs.type === rhs.type && lhs.value === rhs.value;
-  }
-
-  function discard<T extends Record<string, any>>(
-    object: T,
-    ...keys: (keyof T)[]
-  ) {
-    let entries = Object.entries(object).filter(([key]) => !keys.includes(key));
-    return Object.fromEntries(entries);
-  }
-
-  let number = {
-    value: 0,
-    type: "range",
-    min: 0,
-    max: 20,
-  };
-  let color = {
-    type: "color",
-  };
+  import * as rules from "./rules";
 
   let button = {
-    "border-radius": { ...number },
-    "border-width": { ...number },
-    "background-color": { ...color, value: "#0f62fe" },
-    color: { ...color, value: "#ffffff" },
-    "border-color": { ...color, value: "#0f62fe" },
-    "outline-color": { ...color, value: "#000000" },
-    "outline-width": { ...number },
+    "border-radius": { ...rules.number },
+    "border-width": { ...rules.number },
+    "background-color": { ...rules.color, value: "#0f62fe" },
+    color: { ...rules.color, value: "#ffffff" },
+    "border-color": { ...rules.color, value: "#0f62fe" },
+    "outline-color": { ...rules.color, value: "#000000" },
+    "outline-width": { ...rules.number },
   };
 
   let properties = {
     default: structuredClone(button),
-    hover: structuredClone(discard(button, "border-radius", "border-width")),
-    active: structuredClone(discard(button, "border-radius", "border-width")),
+    hover: structuredClone(
+      rules.discard(button, "border-radius", "border-width")
+    ),
+    active: structuredClone(
+      rules.discard(button, "border-radius", "border-width")
+    ),
   } as const;
 
   let state: keyof typeof properties = "default";
@@ -65,21 +37,21 @@
       sheet.innerHTML = `
   button.btn {
     ${Object.entries(properties.default)
-      .map(([key, value]) => `${key}: ${format(value)};`)
+      .map(([key, value]) => `${key}: ${rules.format(value)};`)
       .join("\n    ")}
   }
 
   button.btn:hover {
     ${Object.entries(properties.hover)
-      .filter(([key, value]) => !eq(properties.default[key], value))
-      .map(([key, value]) => `${key}: ${format(value)};`)
+      .filter(([key, value]) => !rules.eq(properties.default[key], value))
+      .map(([key, value]) => `${key}: ${rules.format(value)};`)
       .join("\n    ")}
   }
 
   button.btn:not(:disabled):active {
     ${Object.entries(properties.active)
-      .filter(([key, value]) => !eq(properties.default[key], value))
-      .map(([key, value]) => `${key}: ${format(value)};`)
+      .filter(([key, value]) => !rules.eq(properties.default[key], value))
+      .map(([key, value]) => `${key}: ${rules.format(value)};`)
       .join("\n    ")}
   }
 `;
@@ -108,7 +80,7 @@
   <div class="controls">
     {#each Object.entries(properties[state]) as [key, value]}
       <label>
-        <span><em>{key}</em>: {format(value)}</span>
+        <span><em>{key}</em>: {rules.format(value)}</span>
         <input bind:value={properties[state][key].value} {...value} />
       </label>
     {/each}
