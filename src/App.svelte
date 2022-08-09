@@ -132,8 +132,10 @@
 
   fieldset {
     display: flex;
-    width: 100%;
     padding: 0.25em;
+  }
+  fieldset legend {
+    font-size: 0.8em;
   }
 
   label {
