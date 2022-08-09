@@ -12,15 +12,27 @@
     "outline-width": { ...rules.number },
   };
 
-  let properties = {
-    default: structuredClone(button),
-    hover: structuredClone(
-      rules.discard(button, "border-radius", "border-width")
-    ),
-    active: structuredClone(
-      rules.discard(button, "border-radius", "border-width")
-    ),
-  } as const;
+  function tryLoad(): Record<
+    "default" | "hover" | "active",
+    typeof button
+  > | null {
+    if (!localStorage.getItem("btn")) return null;
+    return JSON.parse(localStorage.getItem("btn"));
+  }
+
+  let properties =
+    tryLoad() ||
+    ({
+      default: structuredClone(button),
+      hover: structuredClone(
+        rules.discard(button, "border-radius", "border-width")
+      ),
+      active: structuredClone(
+        rules.discard(button, "border-radius", "border-width")
+      ),
+    } as const);
+
+  $: localStorage.setItem("btn", JSON.stringify(properties));
 
   let state: keyof typeof properties = "default";
 
