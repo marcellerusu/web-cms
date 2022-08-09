@@ -59,7 +59,7 @@
   <slot/>
 </button>
 
-< style>${sheet?.innerHTML}</style>
+<${""}style>${sheet?.innerHTML}</style>
 `;
 </script>
 
@@ -103,7 +103,7 @@
   label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.75em;
+    font-size: 0.85em;
     color: rgb(88, 88, 88);
     border-top: 1px solid rgba(0, 0, 0, 0.205);
     align-items: center;
