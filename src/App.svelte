@@ -78,14 +78,19 @@
 <div class="container">
   <button class="btn"> Test Text </button>
 
-  <label>
-    State
-    <select bind:value={state}>
-      {#each Object.keys(properties) as option}
-        <option value={option}>{option}</option>
-      {/each}
-    </select>
-  </label>
+  <fieldset>
+    <legend>Interactive States</legend>
+    {#each Object.keys(properties) as value}
+      <label>
+        {#if value === "default"}
+          [default]
+        {:else}
+          :{value}
+        {/if}
+        <input bind:group={state} type="radio" {value} name="state" />
+      </label>
+    {/each}
+  </fieldset>
 
   <div class="controls">
     {#each Object.entries(properties[state]) as [key, value]}
@@ -112,6 +117,11 @@
     height: min-content;
   }
 
+  fieldset {
+    display: flex;
+    padding: 0.25em;
+  }
+
   label {
     display: flex;
     justify-content: space-between;
@@ -120,6 +130,9 @@
     border-top: 1px solid rgba(0, 0, 0, 0.205);
     align-items: center;
     padding: 5px;
+  }
+  fieldset label {
+    border-top: none;
   }
   label input {
     margin-bottom: 0;
