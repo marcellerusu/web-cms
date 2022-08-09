@@ -73,26 +73,31 @@
 
 <${""}style>${sheet?.innerHTML}</style>
 `;
+
+  let text = "Test Text";
 </script>
 
 <div class="container">
-  <button class="btn"> Test Text </button>
-
-  <fieldset>
-    <legend>Interactive States</legend>
-    {#each Object.keys(properties) as value}
-      <label>
-        {#if value === "default"}
-          [default]
-        {:else}
-          :{value}
-        {/if}
-        <input bind:group={state} type="radio" {value} name="state" />
-      </label>
-    {/each}
-  </fieldset>
+  <div class="sandbox">
+    <button class="btn">{text}</button>
+  </div>
 
   <div class="controls">
+    <input class="placeholder" type="text" bind:value={text} />
+
+    <fieldset>
+      <legend>Interactive States</legend>
+      {#each Object.keys(properties) as value}
+        <label>
+          {#if value === "default"}
+            [default]
+          {:else}
+            :{value}
+          {/if}
+          <input bind:group={state} type="radio" {value} name="state" />
+        </label>
+      {/each}
+    </fieldset>
     {#each Object.entries(properties[state]) as [key, value]}
       <label>
         <span><em>{key}</em>: {rules.format(value)}</span>
@@ -104,6 +109,14 @@
 </div>
 
 <style>
+  .sandbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+  }
+
   .container {
     display: flex;
     flex-direction: column;
@@ -119,25 +132,38 @@
 
   fieldset {
     display: flex;
+    width: 100%;
     padding: 0.25em;
   }
 
   label {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     font-size: 0.85em;
     color: rgb(88, 88, 88);
-    border-top: 1px solid rgba(0, 0, 0, 0.205);
     align-items: center;
     padding: 5px;
   }
-  fieldset label {
+
+  label:not(:first-of-type) {
+    border-top: 1px solid rgba(0, 0, 0, 0.205);
+  }
+  fieldset label:not(:first-of-type) {
     border-top: none;
   }
   label input {
     margin-bottom: 0;
   }
+
+  .placeholder {
+    width: 50%;
+  }
+
   .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 1em;
     background: rgb(244, 244, 244);
     width: 300px;
